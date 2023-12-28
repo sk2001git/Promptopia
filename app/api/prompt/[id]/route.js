@@ -43,17 +43,34 @@ export const PATCH = async (request, { params }) => {
     }
 }
 
-// DELETE (delete)
 
-export const DELETE = async (request, { params }) => {
+// DELETE (delete) NEXT.js problem where you cant have params in your async function 
+// Instead, alternative solution here is to get the url property, spliting the string via / 
+// Then pop to get the last part of the url which is the id
+export const DELETE = async (request) => {
     try {
+        const id = request.url.split('/').pop();
+        console.log(id);
         await connectToDB();
-        // Find the prompt by ID and remove it
-        await Prompt.findByIdAndRemove(params.id);
 
+        // Find the prompt by ID and remove it
+        const prompt = await Prompt.findByIdAndDelete(id);
         return new Response("Prompt deleted successfully", { status: 200 });
     } catch (error) {
-        return new Response("Failed to delete prompt", {status: 500})
+        console.error('Error deleting prompt:', error);
+        return new Response("Error deleting prompt", { status: 500 });
+    }
+};
+
+// Can overload POST to do posting and deleting via using method === "DELETE" and method === "POST"
+// NOT ENCOURAGED, but is another alternative to the NEXT.js problem
+export const POST = async (request , { params } ) => {
+    try {
+        await connectToDB();
+        await Prompt.findByIdAndDelete(params.id);
+        return new Response("Prompt deleted successfully", { status: 200 });
+    } catch (error) {
+        console.error('Error deleting prompt:', error);
+        return new Response("Failed to create new prompt", {status: 500})
     }
 }
-
