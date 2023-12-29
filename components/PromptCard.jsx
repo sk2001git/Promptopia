@@ -55,7 +55,7 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete}) => {
         {post.prompt}
       </p>
       <p className="font-inter text-sm blue_gradient cursor-pointer" onClick={() => handleTagClick && handleTagClick(post.tag)}>
-        #{post.tag}
+        {post.tag}
       </p>
       {/* Checking if the user is the creator of the post and if the path is profile Note creator id is represented by _id */}
       {session?.user.id === post.creator._id && pathName === '/profile' && (
